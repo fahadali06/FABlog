@@ -48,3 +48,4 @@ Route::post('/admin/user/management/update/{id}', 'UsersController@update');
 
 Route::get('/admin/menu/{id}', 'MenuController@index');
 Route::get('/admin/menu', 'MenuController@menu_ajax');
+Route::post('/admin/menu/store', 'MenuController@store');

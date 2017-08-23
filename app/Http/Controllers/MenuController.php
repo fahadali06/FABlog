@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Menu;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use App\User_Menu;
 
 class MenuController extends Controller {
 
@@ -18,8 +19,10 @@ class MenuController extends Controller {
     public function index($id) {
         $menus = [];
         $menu = Menu::all()->toArray();
-        foreach ($menu as $m){ $menus[$m['id']] = $m['title'];}
-        return view('admin.menu.index')->with(compact('menus'));
+        foreach ($menu as $m) {
+            $menus[$m['id']] = $m['title'];
+        }
+        return view('admin.menu.index')->with(compact('menus', 'id'));
     }
 
     public function menu_ajax() {
@@ -97,7 +100,21 @@ class MenuController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        $title = $request->title2;
+        $x = 0;
+
+        if (User_Menu::where('user_id', '=', $request->user_id)->exists()) {
+            User_Menu::where('user_id', $request->user_id)->delete();
+        }
+
+        for ($i = 0; $i < count($title); $i++) {
+            $menu = new User_Menu;
+            $menu->menu_id = $title[$i];
+            $menu->user_id = $request->user_id;
+            $menu->save();
+            $x++;
+        }
+        echo $x == count($title) ? "Success" : "error";
     }
 
     /**

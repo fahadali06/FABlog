@@ -87,6 +87,7 @@
             </div>
             <div class="modal-body">
                 {{ Form::open(['url' => url('/admin/menu/store'), 'mehtod' => 'POST', 'id' => 'FormAdd', 'enctype' => 'multipart/form-data']) }}
+                {{ Form::hidden('user_id', $id) }}
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
@@ -98,7 +99,7 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             {{ Form::label(null, '&nbsp;') }}
-                            {{ Form::select('title2',  [], null , ['class' => 'form-control', 'id' => 'title2', 'multiple' => true]) }}
+                            {{ Form::select('title2[]',  [], null , ['class' => 'form-control', 'id' => 'title2', 'multiple' => true]) }}
 
                         </div>
                     </div>
@@ -119,54 +120,6 @@
             </div>
             <div class="modal-footer">
                 <button onclick="FormAddSubmit();" id="FormAddSubmit" type="button" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!--Open edit modal-->
-<div id="OpenEditModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Edit Blog Category</h4>
-            </div>
-            <div class="modal-body">
-                {{ Form::open(['url' => url('admin/blogs/category/update'), 'mehtod' => 'POST', 'id' => 'FormEdit', 'enctype' => 'multipart/form-data']) }}
-                {{ Form::hidden('blog_id', null,['id' => 'blog_id']) }}
-                <div class="form-group">
-                    {{ Form::label('title', 'Title') }}
-                    {{ Form::text('title', '', ['class' => 'form-control']) }}
-                </div>
-                <div class="form-group">
-                    {{ Form::label('file', 'Image') }}
-                    <div class="clearfix"></div>
-                    <div class="fileUpload btn btn-success">
-                        <span>Upload</span>
-                        {{ Form::file('image', ['class' => 'upload', 'id' => 'file']) }}
-                    </div>
-                    <input type="hidden" id="orignal-image" name="orignal-image" />
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="progress hidden">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-
-                            </div>
-                        </div>
-                        <div id="output"></div>
-                    </div>
-                </div>
-                {{ Form::close() }}
-
-            </div>
-            <div class="modal-footer">
-                <button onclick="FormEditSubmit();" id="FormAddSubmit" type="button" class="btn btn-primary">Save</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -240,7 +193,7 @@
     }
 
     function FormAddSubmit() {
-        if ($('#FormAdd input[name=title]').val() == "") {
+        if ($('#FormAdd select[name=title2]').val() == "") {
             alert('Title field should not be empty!');
         } else {
             $('#FormAdd #output').text('');
@@ -250,7 +203,7 @@
 
             $.ajax({
                 // Your server script to process the upload
-                url: '{{ url("admin/blogs/category/store") }}',
+                url: $('#FormAdd').attr('action'),
                 type: 'POST',
                 // Form data
                 data: new FormData($('#FormAdd')[0]),
@@ -303,120 +256,6 @@
                         $('#FormAdd')[0].reset();
                         $('#FormEdit .progress').addClass('hidden');
                         $('#output').text(response);
-                        table.ajax.reload();
-                    }
-                }
-            });
-        }
-    }
-
-    function edit(id) {
-        window.location.href = '{{ url("admin/user/management/edit") }}/' + id;
-        return false;
-        $('#FormEdit #blog_id').val(id);
-        $.ajax({
-            type: 'POST',
-            url: '{{ url("admin/blogs/category/edit") }}/' + id,
-            data: {_token: $('#edit-' + id).attr('data-token')},
-            dataType: 'json',
-            success: function (response) {
-                var result = response;
-                $('#FormEdit #title').val(result['title']);
-                $('#FormEdit #orignal-image').val(result['image']);
-                $('#OpenEditModal').modal(
-                        {
-                            'backdrop': 'static',
-                            'keyboard': false
-                        }
-                );
-            }
-        });
-    }
-
-    function FormEditSubmit() {
-        if ($('#FormEdit input[name=title]').val() == "") {
-            alert('Title field should not be empty!');
-        } else {
-            $('#FormEdit #output').text('');
-            var blog_id = $('#FormEdit #blog_id').val();
-            $('#FormEdit .progress').removeClass('hidden');
-            $("#FormEdit .progress .progress-bar").css("width", "0%").text("0%");
-            //$(".progress span").text("0%");
-
-            $.ajax({
-                // Your server script to process the upload
-                url: '{{ url("admin/blogs/category/update") }}/' + blog_id,
-                type: 'POST',
-                // Form data
-                data: new FormData($('#FormEdit')[0]),
-                // Tell jQuery not to process data or worry about content-type
-                // You *must* include these options!
-                cache: false,
-                contentType: false,
-                processData: false,
-                // Custom XMLHttpRequest
-                xhr: function () {
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) {
-                        // For handling the progress of the upload
-                        myXhr.upload.addEventListener('progress', function (e) {
-                            var percent = 0;
-                            var position = e.loaded || e.position;
-                            var total = e.total;
-                            if (e.lengthComputable) {
-                                $('progress').attr({
-                                    value: e.loaded,
-                                    max: e.total,
-                                });
-
-                                percent = Math.ceil(position / total * 100);
-
-                            }
-
-                            $("#FormEdit .progress .progress-bar").css("width", +percent + "%").text(percent + "%");
-                            //$(".progress span").text(percent +"%");
-
-                            if (percent == 100) {
-                                //$('#FormEdit .progress').fadeOut(2000);
-                                setTimeout(function () {
-                                    //$('#FormEdit .progress').addClass('hidden');
-                                }, 3000);
-                            }
-
-                        }, false);
-                    }
-                    return myXhr;
-                },
-                success: function (response) {
-                    if (response == 'Success') {
-                        $('#FormEdit')[0].reset();
-                        $('#FormEdit #output').text(response);
-                        $('#FormEdit .progress').addClass('hidden');
-                        $('#OpenEditModal').modal('hide');
-                        table.ajax.reload();
-                    } else {
-                        $('#FormEdit')[0].reset();
-                        $('#FormEdit .progress').addClass('hidden');
-                        $('#FormEdit #output').text(response);
-                        table.ajax.reload();
-                    }
-                }
-            });
-        }
-    }
-
-    function delete_blog(id) {
-        if (confirm('Do you want to do it ?')) {
-            $.ajax({
-                type: 'POST',
-                url: '{{ url("admin/blogs/category/delete") }}/' + id,
-                //dataType: 'json',
-                data: {_token: $('#delete-' + id).attr('data-token')},
-                success: function (response) {
-                    var result = response;
-                    if (result == "Success") {
-                        table.ajax.reload();
-                    } else {
                         table.ajax.reload();
                     }
                 }
