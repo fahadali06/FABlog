@@ -144,6 +144,7 @@
             "ajax": {
                 "url": "{{ url('admin/menu') }}",
                 "type": "GET",
+                "data": {id: '{{$id}}'},
             },
             "columns": [
                 {"data": "id"},

@@ -26,6 +26,7 @@ class MenuController extends Controller {
     }
 
     public function menu_ajax() {
+        $id = Input::get('id');
         $draw = Input::get('draw');
         $start = Input::get('start');
         $length = Input::get('length');
@@ -36,7 +37,7 @@ class MenuController extends Controller {
             $orderby = $columns[$order[0]['column']]['data'];
             $orderdir = $order[0]['dir'];
         } else {
-            $orderby = 'menu.id';
+            $orderby = 'user_menu.id';
             $orderdir = 'desc';
         }
 
@@ -45,7 +46,11 @@ class MenuController extends Controller {
         $search = $search['value'];
         if ($search && $search != "") {
             $category = Menu::select('menu.id', 'menu.title', DB::raw('DATE_FORMAT(menu.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(menu.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+                    ->join('user_menu', function($join){
+                        $join->on('user_menu.menu_id', '=', 'menu.id');
+                    })
                     ->where('menu.title', 'like', $search . '%')
+                    ->where('user_menu.user_id', $id)
                     ->orWhere('menu.created_at', 'like', $search . '%')
                     ->orWhere('menu.updated_at', 'like', $search . '%')
                     ->orWhere('menu.id', $search)
@@ -58,6 +63,10 @@ class MenuController extends Controller {
             $recordsFilteredSearch = count($category);
         } else {
             $category = Menu::select('menu.id', 'menu.title', DB::raw('DATE_FORMAT(menu.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(menu.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+                    ->join('user_menu', function($join){
+                        $join->on('user_menu.menu_id', '=', 'menu.id');
+                    })
+                    ->where('user_menu.user_id', $id)
                     ->skip($start)
                     ->take($length)
                     ->orderBy($orderby, $orderdir)
