@@ -32,7 +32,7 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Menu <button class="btn btn-primary btn-sm pull-right" onclick="OpenNew();">New User</button></h1>
+            <h1 class="page-header">Menu <button class="btn btn-primary btn-sm pull-right" onclick="OpenNew();">User Rigts</button></h1>
 
         </div>
         <!-- /.col-lg-12 -->
@@ -87,47 +87,24 @@
                 <h4 class="modal-title">New Blog Category</h4>
             </div>
             <div class="modal-body">
-                {{ Form::open(['url' => url('/register'), 'mehtod' => 'POST', 'id' => 'FormAdd', 'enctype' => 'multipart/form-data']) }}
-                <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                    {{ Form::label('name', 'Name') }}
-                    {{ Form::text('name',  old('name') , ['class' => 'form-control', 'id' => 'name']) }}
-                    @if ($errors->has('name'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('name') }}</strong>
-                        </span>
-                    @endif
+                {{ Form::open(['url' => url('/admin/menu/store'), 'mehtod' => 'POST', 'id' => 'FormAdd', 'enctype' => 'multipart/form-data']) }}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ Form::label('title1', 'Menus') }}
+                            {{ Form::select('title1',  $menus, null , ['class' => 'form-control', 'id' => 'title1', 'multiple' => true]) }}
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ Form::label(null, '&nbsp;') }}
+                            {{ Form::select('title2',  [], null , ['class' => 'form-control', 'id' => 'title2', 'multiple' => true]) }}
+
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                    {{ Form::label('email', 'Email') }}
-                    {{ Form::email('email',  old('email') , ['class' => 'form-control', 'id' => 'email']) }}
-                    @if ($errors->has('email'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('email') }}</strong>
-                        </span>
-                    @endif
-                </div>
-                
-                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                    {{ Form::label('password', 'Password') }}
-                    {{ Form::password('password', ['class' => 'form-control', 'id' => 'password']) }}
-                    @if ($errors->has('password'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('password') }}</strong>
-                        </span>
-                    @endif
-                </div>
-                
-                <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                    {{ Form::label('password_confirmation', 'Password') }}
-                    {{ Form::password('password_confirmation', ['class' => 'form-control', 'id' => 'password_confirm']) }}
-                    @if ($errors->has('password_confirmation'))
-                        <span class="help-block">
-                            <strong>{{ $errors->first('password_confirmation') }}</strong>
-                        </span>
-                    @endif
-                </div>
-                
+
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="progress hidden">
@@ -204,226 +181,225 @@
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <!--<script src="{{ asset('public/assets/admin/vendor/data-table-ajax/js/jquery.dataTables.min.js') }}"></script>-->
 <script>
-    var table;
-    $(document).ready(function () {
-        table = $('#dataTables-example').DataTable({
-            "processing": true,
-            "serverSide": true,
-            //"pageLength": 10,
-            //"sAjaxDataProp":"",
-            "order": [[0, "desc"]],
-            "ajax": {
-                "url": "{{ url('admin/menu') }}",
-                "type": "GET",
-            },
-            "columns": [
-                {"data": "id"},
-                {"data": "title"},
-                {"data": "created_date"},
-                {"data": "updated_date"},
-                {"data": "action"},
-            ]
-        });
-        setInterval(function () {
-            table.ajax.reload(null, false); // user paging is not reset on reload
-        }, 30000);
-    });
+                    var table;
+                    $(document).ready(function () {
+                        table = $('#dataTables-example').DataTable({
+                            "processing": true,
+                            "serverSide": true,
+                            //"pageLength": 10,
+                            //"sAjaxDataProp":"",
+                            "order": [[0, "desc"]],
+                            "ajax": {
+                                "url": "{{ url('admin/menu') }}",
+                                "type": "GET",
+                            },
+                            "columns": [
+                                {"data": "id"},
+                                {"data": "title"},
+                                {"data": "created_date"},
+                                {"data": "updated_date"},
+                                {"data": "action"},
+                            ]
+                        });
+                        setInterval(function () {
+                            table.ajax.reload(null, false); // user paging is not reset on reload
+                        }, 30000);
+                    });
 
-    function OpenNew() {
-        window.location.href = '{{ url("admin/user/management/create") }}';
-        return false;
-        $('#OpenNewModal').modal(
-                {
-                    'backdrop': 'static',
-                    'keyboard': false
-                }
-        );
-    }
+                    function OpenNew() {
 
-    function FormAddSubmit() {
-        if ($('#FormAdd input[name=title]').val() == "") {
-            alert('Title field should not be empty!');
-        } else {
-            $('#FormAdd #output').text('');
-            $('.progress').removeClass('hidden');
-            $(".progress .progress-bar").css("width", "0%").text("0%");
-            //$(".progress span").text("0%");
-
-            $.ajax({
-                // Your server script to process the upload
-                url: '{{ url("admin/blogs/category/store") }}',
-                type: 'POST',
-                // Form data
-                data: new FormData($('#FormAdd')[0]),
-                // Tell jQuery not to process data or worry about content-type
-                // You *must* include these options!
-                cache: false,
-                contentType: false,
-                processData: false,
-                // Custom XMLHttpRequest
-                xhr: function () {
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) {
-                        // For handling the progress of the upload
-                        myXhr.upload.addEventListener('progress', function (e) {
-                            var percent = 0;
-                            var position = e.loaded || e.position;
-                            var total = e.total;
-                            if (e.lengthComputable) {
-                                $('progress').attr({
-                                    value: e.loaded,
-                                    max: e.total,
-                                });
-
-                                percent = Math.ceil(position / total * 100);
-
-                            }
-
-                            $(".progress .progress-bar").css("width", +percent + "%").text(percent + "%");
-                            //$(".progress span").text(percent +"%");
-
-                            if (percent == 100) {
-                                //$('.progress').fadeOut(2000);
-                                setTimeout(function () {
-                                    //$('.progress').addClass('hidden');
-                                }, 3000);
-                            }
-
-                        }, false);
+                        $('#OpenNewModal').modal(
+                                {
+                                    'backdrop': 'static',
+                                    'keyboard': false
+                                }
+                        );
                     }
-                    return myXhr;
-                },
-                success: function (response) {
-                    if (response == 'Success') {
-                        $('#FormAdd')[0].reset();
-                        $('#output').text(response);
-                        $('#FormEdit .progress').addClass('hidden');
-                        $('#OpenNewModal').modal('hide');
-                        table.ajax.reload();
-                    } else {
-                        $('#FormAdd')[0].reset();
-                        $('#FormEdit .progress').addClass('hidden');
-                        $('#output').text(response);
-                        table.ajax.reload();
-                    }
-                }
-            });
-        }
-    }
 
-    function edit(id) {
-        window.location.href = '{{ url("admin/user/management/edit") }}/'+id;
-        return false;
-        $('#FormEdit #blog_id').val(id);
-        $.ajax({
-            type: 'POST',
-            url: '{{ url("admin/blogs/category/edit") }}/' + id,
-            data: {_token: $('#edit-' + id).attr('data-token')},
-            dataType: 'json',
-            success: function (response) {
-                var result = response;
-                $('#FormEdit #title').val(result['title']);
-                $('#FormEdit #orignal-image').val(result['image']);
-                $('#OpenEditModal').modal(
-                        {
-                            'backdrop': 'static',
-                            'keyboard': false
+                    function FormAddSubmit() {
+                        if ($('#FormAdd input[name=title]').val() == "") {
+                            alert('Title field should not be empty!');
+                        } else {
+                            $('#FormAdd #output').text('');
+                            $('.progress').removeClass('hidden');
+                            $(".progress .progress-bar").css("width", "0%").text("0%");
+                            //$(".progress span").text("0%");
+
+                            $.ajax({
+                                // Your server script to process the upload
+                                url: '{{ url("admin/blogs/category/store") }}',
+                                type: 'POST',
+                                // Form data
+                                data: new FormData($('#FormAdd')[0]),
+                                // Tell jQuery not to process data or worry about content-type
+                                // You *must* include these options!
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                // Custom XMLHttpRequest
+                                xhr: function () {
+                                    var myXhr = $.ajaxSettings.xhr();
+                                    if (myXhr.upload) {
+                                        // For handling the progress of the upload
+                                        myXhr.upload.addEventListener('progress', function (e) {
+                                            var percent = 0;
+                                            var position = e.loaded || e.position;
+                                            var total = e.total;
+                                            if (e.lengthComputable) {
+                                                $('progress').attr({
+                                                    value: e.loaded,
+                                                    max: e.total,
+                                                });
+
+                                                percent = Math.ceil(position / total * 100);
+
+                                            }
+
+                                            $(".progress .progress-bar").css("width", +percent + "%").text(percent + "%");
+                                            //$(".progress span").text(percent +"%");
+
+                                            if (percent == 100) {
+                                                //$('.progress').fadeOut(2000);
+                                                setTimeout(function () {
+                                                    //$('.progress').addClass('hidden');
+                                                }, 3000);
+                                            }
+
+                                        }, false);
+                                    }
+                                    return myXhr;
+                                },
+                                success: function (response) {
+                                    if (response == 'Success') {
+                                        $('#FormAdd')[0].reset();
+                                        $('#output').text(response);
+                                        $('#FormEdit .progress').addClass('hidden');
+                                        $('#OpenNewModal').modal('hide');
+                                        table.ajax.reload();
+                                    } else {
+                                        $('#FormAdd')[0].reset();
+                                        $('#FormEdit .progress').addClass('hidden');
+                                        $('#output').text(response);
+                                        table.ajax.reload();
+                                    }
+                                }
+                            });
                         }
-                );
-            }
-        });
-    }
+                    }
 
-    function FormEditSubmit() {
-        if ($('#FormEdit input[name=title]').val() == "") {
-            alert('Title field should not be empty!');
-        } else {
-            $('#FormEdit #output').text('');
-            var blog_id = $('#FormEdit #blog_id').val();
-            $('#FormEdit .progress').removeClass('hidden');
-            $("#FormEdit .progress .progress-bar").css("width", "0%").text("0%");
-            //$(".progress span").text("0%");
-
-            $.ajax({
-                // Your server script to process the upload
-                url: '{{ url("admin/blogs/category/update") }}/' + blog_id,
-                type: 'POST',
-                // Form data
-                data: new FormData($('#FormEdit')[0]),
-                // Tell jQuery not to process data or worry about content-type
-                // You *must* include these options!
-                cache: false,
-                contentType: false,
-                processData: false,
-                // Custom XMLHttpRequest
-                xhr: function () {
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) {
-                        // For handling the progress of the upload
-                        myXhr.upload.addEventListener('progress', function (e) {
-                            var percent = 0;
-                            var position = e.loaded || e.position;
-                            var total = e.total;
-                            if (e.lengthComputable) {
-                                $('progress').attr({
-                                    value: e.loaded,
-                                    max: e.total,
-                                });
-
-                                percent = Math.ceil(position / total * 100);
-
+                    function edit(id) {
+                        window.location.href = '{{ url("admin/user/management/edit") }}/' + id;
+                        return false;
+                        $('#FormEdit #blog_id').val(id);
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ url("admin/blogs/category/edit") }}/' + id,
+                            data: {_token: $('#edit-' + id).attr('data-token')},
+                            dataType: 'json',
+                            success: function (response) {
+                                var result = response;
+                                $('#FormEdit #title').val(result['title']);
+                                $('#FormEdit #orignal-image').val(result['image']);
+                                $('#OpenEditModal').modal(
+                                        {
+                                            'backdrop': 'static',
+                                            'keyboard': false
+                                        }
+                                );
                             }
-
-                            $("#FormEdit .progress .progress-bar").css("width", +percent + "%").text(percent + "%");
-                            //$(".progress span").text(percent +"%");
-
-                            if (percent == 100) {
-                                //$('#FormEdit .progress').fadeOut(2000);
-                                setTimeout(function () {
-                                    //$('#FormEdit .progress').addClass('hidden');
-                                }, 3000);
-                            }
-
-                        }, false);
+                        });
                     }
-                    return myXhr;
-                },
-                success: function (response) {
-                    if (response == 'Success') {
-                        $('#FormEdit')[0].reset();
-                        $('#FormEdit #output').text(response);
-                        $('#FormEdit .progress').addClass('hidden');
-                        $('#OpenEditModal').modal('hide');
-                        table.ajax.reload();
-                    } else {
-                        $('#FormEdit')[0].reset();
-                        $('#FormEdit .progress').addClass('hidden');
-                        $('#FormEdit #output').text(response);
-                        table.ajax.reload();
-                    }
-                }
-            });
-        }
-    }
 
-    function delete_blog(id) {
-        if (confirm('Do you want to do it ?')) {
-            $.ajax({
-                type: 'POST',
-                url: '{{ url("admin/blogs/category/delete") }}/' + id,
-                //dataType: 'json',
-                data: {_token: $('#delete-' + id).attr('data-token')},
-                success: function (response) {
-                    var result = response;
-                    if (result == "Success") {
-                        table.ajax.reload();
-                    } else {
-                        table.ajax.reload();
+                    function FormEditSubmit() {
+                        if ($('#FormEdit input[name=title]').val() == "") {
+                            alert('Title field should not be empty!');
+                        } else {
+                            $('#FormEdit #output').text('');
+                            var blog_id = $('#FormEdit #blog_id').val();
+                            $('#FormEdit .progress').removeClass('hidden');
+                            $("#FormEdit .progress .progress-bar").css("width", "0%").text("0%");
+                            //$(".progress span").text("0%");
+
+                            $.ajax({
+                                // Your server script to process the upload
+                                url: '{{ url("admin/blogs/category/update") }}/' + blog_id,
+                                type: 'POST',
+                                // Form data
+                                data: new FormData($('#FormEdit')[0]),
+                                // Tell jQuery not to process data or worry about content-type
+                                // You *must* include these options!
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                // Custom XMLHttpRequest
+                                xhr: function () {
+                                    var myXhr = $.ajaxSettings.xhr();
+                                    if (myXhr.upload) {
+                                        // For handling the progress of the upload
+                                        myXhr.upload.addEventListener('progress', function (e) {
+                                            var percent = 0;
+                                            var position = e.loaded || e.position;
+                                            var total = e.total;
+                                            if (e.lengthComputable) {
+                                                $('progress').attr({
+                                                    value: e.loaded,
+                                                    max: e.total,
+                                                });
+
+                                                percent = Math.ceil(position / total * 100);
+
+                                            }
+
+                                            $("#FormEdit .progress .progress-bar").css("width", +percent + "%").text(percent + "%");
+                                            //$(".progress span").text(percent +"%");
+
+                                            if (percent == 100) {
+                                                //$('#FormEdit .progress').fadeOut(2000);
+                                                setTimeout(function () {
+                                                    //$('#FormEdit .progress').addClass('hidden');
+                                                }, 3000);
+                                            }
+
+                                        }, false);
+                                    }
+                                    return myXhr;
+                                },
+                                success: function (response) {
+                                    if (response == 'Success') {
+                                        $('#FormEdit')[0].reset();
+                                        $('#FormEdit #output').text(response);
+                                        $('#FormEdit .progress').addClass('hidden');
+                                        $('#OpenEditModal').modal('hide');
+                                        table.ajax.reload();
+                                    } else {
+                                        $('#FormEdit')[0].reset();
+                                        $('#FormEdit .progress').addClass('hidden');
+                                        $('#FormEdit #output').text(response);
+                                        table.ajax.reload();
+                                    }
+                                }
+                            });
+                        }
                     }
-                }
-            });
-        }
-    }
+
+                    function delete_blog(id) {
+                        if (confirm('Do you want to do it ?')) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '{{ url("admin/blogs/category/delete") }}/' + id,
+                                //dataType: 'json',
+                                data: {_token: $('#delete-' + id).attr('data-token')},
+                                success: function (response) {
+                                    var result = response;
+                                    if (result == "Success") {
+                                        table.ajax.reload();
+                                    } else {
+                                        table.ajax.reload();
+                                    }
+                                }
+                            });
+                        }
+                    }
 
 </script>
 @endsection

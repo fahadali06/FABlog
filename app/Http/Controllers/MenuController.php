@@ -16,8 +16,10 @@ class MenuController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index($id) {
-        //$menu = Menu::all()->toArray();
-        return view('admin.menu.index');
+        $menus = [];
+        $menu = Menu::all()->toArray();
+        foreach ($menu as $m){ $menus[$m['id']] = $m['title'];}
+        return view('admin.menu.index')->with(compact('menus'));
     }
 
     public function menu_ajax() {
@@ -62,8 +64,9 @@ class MenuController extends Controller {
 
         $data = [];
         foreach ($category as $da) {
-            $action = '<a href="' . url("admin/menu/" . $da['id']) . '" class="btn btn-success btn-xs">Pages <i class="fa fa-arrow-right"></i></a> ';
-            $action .= '<a id="edit-' . $da['id'] . '" data-token=' . csrf_token() . ' onclick="edit(' . $da['id'] . ');" class="btn btn-warning btn-xs">Edit <i class="fa fa-pencil"></i></a> ';
+            $action = "";
+            //$action = '<a href="' . url("admin/menu/" . $da['id']) . '" class="btn btn-success btn-xs"><i class="fa fa-pencil"></i> User rights</a> ';
+//            $action .= '<a id="edit-' . $da['id'] . '" data-token=' . csrf_token() . ' onclick="edit(' . $da['id'] . ');" class="btn btn-warning btn-xs">Edit <i class="fa fa-pencil"></i></a> ';
             //$action .= '<a id="delete-' . $da['id'] . '" data-token=' . csrf_token() . ' onclick="delete_blog(' . $da['id'] . ');" class="btn btn-danger btn-xs">Delete <i class="fa fa-trash"></i></a>';
             array_push($data, array_merge($da, ['action' => $action]));
         }
