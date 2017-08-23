@@ -46,4 +46,5 @@ Route::post('/admin/user/management/store', 'UsersController@store');
 Route::get('/admin/user/management/edit/{id}', 'UsersController@edit');
 Route::post('/admin/user/management/update/{id}', 'UsersController@update');
 
-Route::get('/admin/menu', 'UsersController@user_management');
+Route::get('/admin/menu/{id}', 'MenuController@index');
+Route::get('/admin/menu', 'MenuController@menu_ajax');
