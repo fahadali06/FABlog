@@ -62,7 +62,7 @@ class MenuController extends Controller {
             $recordsTotalSearch = count($category);
             $recordsFilteredSearch = count($category);
         } else {
-            $category = Menu::select('menu.id', 'menu.title', DB::raw('DATE_FORMAT(menu.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(menu.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+            $category = Menu::select('menu.id', 'menu.title', DB::raw('DATE_FORMAT(user_menu.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(user_menu.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
                     ->join('user_menu', function($join){
                         $join->on('user_menu.menu_id', '=', 'menu.id');
                     })
