@@ -278,7 +278,7 @@
                             <li>
                                 <a href="{{ url('') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                             </li>
-
+                           
                             <li>
                                 <a href="{{ url('admin/blogs/category') }}"><i class="fa fa-table fa-fw"></i> Category</a>
                             </li>
