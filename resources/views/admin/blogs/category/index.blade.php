@@ -53,6 +53,7 @@
                                 <th>ID</th>
                                 <th>Title</th>
                                 <th>Created by</th>
+                                <th>Status</th>
                                 <th>Created at</th>
                                 <th>Updated at</th>
                                 <th>Action</th>
@@ -92,6 +93,10 @@
                 <div class="form-group">
                     {{ Form::label('title', 'Title') }}
                     {{ Form::text('title', '', ['class' => 'form-control']) }}
+                </div>
+                <div class="form-group">
+                    {{ Form::label('status', 'Status') }}
+                    {{ Form::select('status', ['Yes' => 'Active', 'No' => 'Inactive'], null, ['class' => 'form-control']) }}
                 </div>
                 <div class="form-group">
                     {{ Form::label('file', 'Image') }}
@@ -140,6 +145,10 @@
                 <div class="form-group">
                     {{ Form::label('title', 'Title') }}
                     {{ Form::text('title', '', ['class' => 'form-control']) }}
+                </div>
+                <div class="form-group">
+                    {{ Form::label('status', 'Status') }}
+                    {{ Form::select('status', ['Yes' => 'Active', 'No' => 'Inactive'], null, ['class' => 'form-control']) }}
                 </div>
                 <div class="form-group">
                     {{ Form::label('file', 'Image') }}
@@ -194,6 +203,7 @@
                 {"data": "id"},
                 {"data": "title"},
                 {"data": "user_id"},
+                {"data": "status"},
                 {"data": "created_date"},
                 {"data": "updated_date"},
                 {"data": "action"},
@@ -294,6 +304,7 @@
             success: function (response) {
                 var result = response;
                 $('#FormEdit #title').val(result['title']);
+                $('#FormEdit #status').val(result['status']);
                 $('#FormEdit #orignal-image').val(result['image']);
                 $('#OpenEditModal').modal(
                         {

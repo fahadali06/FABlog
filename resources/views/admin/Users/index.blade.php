@@ -53,6 +53,7 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Role</th>
+                                <th>Status</th>
                                 <th>Created at</th>
                                 <th>Updated at</th>
                                 <th>Action</th>
@@ -221,6 +222,7 @@
                 {"data": "id"},
                 {"data": "name"},
                 {"data": "title"},
+                {"data": "status"},
                 {"data": "created_date"},
                 {"data": "updated_date"},
                 {"data": "action"},

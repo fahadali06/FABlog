@@ -45,7 +45,7 @@ class UsersController extends Controller {
         $search = Input::get('search');
         $search = $search['value'];
         if ($search && $search != "") {
-            $category = User::select('roles.id as role_id', 'roles.title', 'users.id', 'users.name', DB::raw('DATE_FORMAT(users.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(users.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+            $category = User::select('roles.id as role_id', 'roles.title', 'users.id', 'users.name', DB::raw('DATE_FORMAT(users.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(users.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'),DB::raw('(CASE WHEN (users.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('roles', function($join) {
                         $join->on('roles.id', '=', 'users.role_id');
                     })
@@ -62,7 +62,7 @@ class UsersController extends Controller {
             $recordsTotalSearch = count($category);
             $recordsFilteredSearch = count($category);
         } else {
-            $category = User::select('roles.id as role_id', 'roles.title', 'users.id', 'users.name', DB::raw('DATE_FORMAT(users.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(users.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+            $category = User::select('roles.id as role_id', 'roles.title', 'users.id', 'users.name', DB::raw('DATE_FORMAT(users.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(users.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'),DB::raw('(CASE WHEN (users.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('roles', function($join) {
                         $join->on('roles.id', '=', 'users.role_id');
                     })
@@ -124,6 +124,7 @@ class UsersController extends Controller {
         $user->name = $request->name;
         $user->email = $request->email;
         $user->role_id = $request->role_id;
+        $user->status = $request->status;
         $user->password = bcrypt($request->password);
         $user->save();
         return redirect('admin/user/management');
@@ -175,6 +176,7 @@ class UsersController extends Controller {
         $user->name = $request->name;
         $user->email = $request->email;
         $user->role_id = $request->role_id;
+        $user->status = $request->status;
         $user->password = bcrypt($request->password);
         $user->save();
         return redirect('admin/user/management');

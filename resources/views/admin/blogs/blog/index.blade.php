@@ -54,6 +54,7 @@
                                 <th>Image</th>
                                 <th>Title</th>
                                 <th>Created by</th>
+                                <th>Status</th>
                                 <th>Created at</th>
                                 <th>Updated at</th>
                                 <th>Action</th>
@@ -103,6 +104,10 @@
                 <div class="form-group">
                     {{ Form::label('links', 'Link') }}<small>(optional)</small>
                     {{ Form::text('links', '', ['class' => 'form-control', 'placeholder' => 'eg: https://blog.com.pk']) }}
+                </div>
+                <div class="form-group">
+                    {{ Form::label('status', 'Status') }}
+                    {{ Form::select('status', ['Yes' => 'Active', 'No' => 'Inactive'], null, ['class' => 'form-control']) }}
                 </div>
                 <div class="form-group">
                     {{ Form::label('file', 'Image') }}
@@ -162,6 +167,10 @@
                     {{ Form::text('links', '', ['class' => 'form-control', 'placeholder' => 'eg: https://blog.com.pk']) }}
                 </div>
                 <div class="form-group">
+                    {{ Form::label('status', 'Status') }}
+                    {{ Form::select('status', ['Yes' => 'Active', 'No' => 'Inactive'], null, ['class' => 'form-control']) }}
+                </div>
+                <div class="form-group">
                     {{ Form::label('file', 'Image') }}
                     <div class="clearfix"></div>
                     <div class="fileUpload btn btn-success">
@@ -216,6 +225,7 @@
                 {"data": "image"},
                 {"data": "title"},
                 {"data": "user_id"},
+                {"data": "status"},
                 {"data": "created_date"},
                 {"data": "updated_date"},
                 {"data": "action"},
@@ -319,6 +329,7 @@
             success: function (response) {
                 var result = response;
                 $('#FormEdit #title').val(result['title']);
+                $('#FormEdit #status').val(result['status']);
                 CKEDITOR.instances['descriptionEdit'].setData(result['description']);
                 $('#FormEdit #links').val(result['links']);
                 $('#FormEdit #orignal-image').val(result['image']);

@@ -17,6 +17,7 @@ class CreateMenuTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->string('icon', 50);
+            $table->enum('status', ['Yes', 'No'])->default('Yes');
             $table->timestamps();
         });
     }

@@ -48,6 +48,11 @@
                         </span>
                         @endif
                     </div>
+                    
+                    <div class="form-group">
+                        {{ Form::label('status', 'Status') }}
+                        {{ Form::select('status', ['Yes' => 'Active', 'No' => 'Inactive'], null, ['class' => 'form-control']) }}
+                    </div>
 
                     <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                         {{ Form::label('password', 'Password') }}

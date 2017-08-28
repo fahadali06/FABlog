@@ -45,7 +45,7 @@ class BlogsController extends Controller {
         $search = Input::get('search');
         $search = $search['value'];
         if ($search && $search != "") {
-            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path')
+            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path',DB::raw('(CASE WHEN (blogs.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('users', function($join) {
                         $join->on('users.id', '=', 'blogs.user_id');
                     })
@@ -64,7 +64,7 @@ class BlogsController extends Controller {
             $recordsTotalSearch = count($blogs);
             $recordsFilteredSearch = count($blogs);
         } else {
-            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path')
+            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path',DB::raw('(CASE WHEN (blogs.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('users', function($join) {
                         $join->on('users.id', '=', 'blogs.user_id');
                     })
@@ -119,6 +119,7 @@ class BlogsController extends Controller {
             $blogs->description = $request->description;
             $blogs->links = $request->links;
             $blogs->blog_category = $request->blog_category;
+            $blogs->status = $request->status;
             $blogs->user_id = $user['id'];
             if ($request->image && !empty($request->image)) {
                 $photoName = time() . '.' . $request->image->getClientOriginalExtension();
@@ -163,7 +164,7 @@ class BlogsController extends Controller {
     public function update(Request $request, $id) {
         $user = Auth::user();
         if ($request->title && $request->title != "") {
-            $data = ['title' => $request->title, 'user_id' => $user['id'], 'description' => $request->description, 'links' => $request->links];
+            $data = ['title' => $request->title, 'user_id' => $user['id'], 'description' => $request->description, 'links' => $request->links, 'status' => $request->status];
             if ($request->image && !empty($request->image)) {
                 $photoName = time() . '.' . $request->image->getClientOriginalExtension();
                 $datefolder = 'images/blogs/' . date('m-Y');

@@ -46,7 +46,7 @@ class BlogCategoryController extends Controller {
         $search = Input::get('search');
         $search = $search['value'];
         if ($search && $search != "") {
-            $category = BlogCategory::select('blog_category.id', 'blog_category.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blog_category.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blog_category.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+            $category = BlogCategory::select('blog_category.id', 'blog_category.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blog_category.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blog_category.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'),DB::raw('(CASE WHEN (blog_category.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('users', function($join) {
                         $join->on('users.id', '=', 'blog_category.user_id');
                     })
@@ -64,7 +64,7 @@ class BlogCategoryController extends Controller {
             $recordsTotalSearch = count($category);
             $recordsFilteredSearch = count($category);
         } else {
-            $category = BlogCategory::select('blog_category.id', 'blog_category.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blog_category.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blog_category.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'))
+            $category = BlogCategory::select('blog_category.id', 'blog_category.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blog_category.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blog_category.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'),DB::raw('(CASE WHEN (blog_category.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('users', function($join) {
                         $join->on('users.id', '=', 'blog_category.user_id');
                     })
@@ -115,6 +115,7 @@ class BlogCategoryController extends Controller {
         $user = Auth::user();
         if ($request->title && $request->title) {
             $blogcategory->title = ucfirst($request->title);
+            $blogcategory->status = $request->status;
             $blogcategory->user_id = $user['id'];
             if ($request->image && !empty($request->image)) {
                 $photoName = time() . '.' . $request->image->getClientOriginalExtension();
@@ -159,7 +160,7 @@ class BlogCategoryController extends Controller {
     public function update(Request $request, $id) {
         $user = Auth::user();
         if ($request->title && $request->title != "") {
-            $data = ['title' => ucfirst($request->title), 'user_id' => $user['id']];
+            $data = ['title' => ucfirst($request->title), 'user_id' => $user['id'], 'status' => $request->status];
             if ($request->image && !empty($request->image)) {
                 $photoName = time() . '.' . $request->image->getClientOriginalExtension();
                 $datefolder = 'images/category/' . date('m-Y');

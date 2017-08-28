@@ -21,6 +21,7 @@ class CreateBlogsTable extends Migration
             $table->string('links');
             $table->string('image');
             $table->string('path');
+            $table->enum('status', ['Yes', 'No'])->default('Yes');
             $table->integer('created_by');
             $table->timestamps();
             $table->softDeletes();
