@@ -30,12 +30,12 @@
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-        
+
         <!-- jQuery -->
         <script src="{{ asset('public/assets/admin//vendor/jquery/jquery.min.js') }}"></script>
 
     </head>
-
+    
     <body>
         <div id="wrapper">
             <!-- Navigation -->
@@ -47,7 +47,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{{ url('') }}">Blog</a>
+                    <a class="navbar-brand" href="{{ url('') }}">Blog </a>
                 </div>
                 <!-- /.navbar-header -->
 
@@ -275,19 +275,11 @@
                                 </div>
                                 <!-- /input-group -->
                             </li>
+                            @foreach($Menu as $m)
                             <li>
-                                <a href="{{ url('') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                                <a href="{{ url($m['slug']) }}"><i class="{{ $m['icon'] }}}"></i> {{ $m['title'] }} </a>
                             </li>
-                           
-                            <li>
-                                <a href="{{ url('admin/blogs/category') }}"><i class="fa fa-table fa-fw"></i> Category</a>
-                            </li>
-                            
-                            <li>
-                                <a href="{{ url('admin/user/management') }}"><i class="fa fa-users fa-fw"></i> Users</a>
-                            </li>
-
-
+                            @endforeach
                         </ul>
                     </div>
                     <!-- /.sidebar-collapse -->
@@ -300,7 +292,7 @@
 
         </div>
         <!-- /#wrapper -->
-        
+
         <!-- Bootstrap Core JavaScript -->
         <script src="{{ asset('public/assets/admin/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 
@@ -309,8 +301,8 @@
 
         <!-- Custom Theme JavaScript -->
         <script src="{{ asset('public/assets/admin/dist/js/sb-admin-2.js') }}"></script>
-        
-        
+
+
     </body>
 </html>
 
