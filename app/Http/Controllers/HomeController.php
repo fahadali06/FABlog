@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\BlogCategory;
+use App\Blogs;
 
 class HomeController extends Controller {
 
@@ -23,6 +24,10 @@ class HomeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
+        $blog = BlogCategory::with(['blogcat' => function($blogs){
+            $blogs->select();
+        }])->get()->toArray();
+        echo "<pre>";print_r($blog);exit;
         return view('home');
     }
 
