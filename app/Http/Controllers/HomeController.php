@@ -24,11 +24,17 @@ class HomeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $blog = BlogCategory::with(['blogcat' => function($blogs){
-            $blogs->select();
-        }])->get()->toArray();
-        echo "<pre>";print_r($blog);exit;
-        return view('home');
+        $blog = Blogs::with(['blogcategory' => function($blogs){
+            //$blogs->select();
+        }])
+        ->with(['bloguser' => function($user){
+            //$user->select();
+        }])
+        ->limit(2)
+        ->get()
+        ->toArray();
+        //echo "<pre>";print_r($blog);exit;
+        return view('home')->with(compact('blog'));
     }
 
     public function dashboard() {
