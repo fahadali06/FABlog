@@ -18,32 +18,13 @@
         <h5 class="card-header">Categories</h5>
         <div class="card-body">
             <div class="row">
+                @if(isset($BlogCategoryList))
+                @foreach($BlogCategoryList as $category)
                 <div class="col-lg-6">
-                    <ul class="list-unstyled mb-0">
-                        <li>
-                            <a href="#">Web Design</a>
-                        </li>
-                        <li>
-                            <a href="#">HTML</a>
-                        </li>
-                        <li>
-                            <a href="#">Freebies</a>
-                        </li>
-                    </ul>
+                    <a href="{{ url('blog'.'/'.$category['id']) }}">{{ $category['title'] }}</a>
                 </div>
-                <div class="col-lg-6">
-                    <ul class="list-unstyled mb-0">
-                        <li>
-                            <a href="#">JavaScript</a>
-                        </li>
-                        <li>
-                            <a href="#">CSS</a>
-                        </li>
-                        <li>
-                            <a href="#">Tutorials</a>
-                        </li>
-                    </ul>
-                </div>
+                @endforeach
+                @endif
             </div>
         </div>
     </div>
@@ -61,7 +42,7 @@
                     {!! str_limit($blog['description'], $limit = 50, $end = '...') !!}
                     <a href="{{ url('#') }}"><small>See Post</small></a>
                 </div>
-                
+
             </div>
             @endforeach
             @endif

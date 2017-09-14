@@ -14,7 +14,7 @@ class BlogCategoryProvider extends ServiceProvider {
      */
     public function boot() {
         view()->composer('*', function ($view) {
-            $BlogCategoryList = BlogCategory::all()->where('status', '=', 'Yes')->toArray();
+            $BlogCategoryList = BlogCategory::all()->where('status', 'Yes')->toArray();
             $view->with(compact('BlogCategoryList'));
         });
     }
