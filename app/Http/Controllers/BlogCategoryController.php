@@ -18,7 +18,7 @@ class BlogCategoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['blog']]);
     }
 
     public function index() {
@@ -183,6 +183,12 @@ class BlogCategoryController extends Controller {
         $blogcategory = BlogCategory::findOrFail($id);
         $blogcategory->delete();
         echo $blogcategory ? "Success" : "error";
+    }
+    
+    //Front work start..
+    public function blog(){
+        $blogcategory = BlogCategory::select('id' ,'title',DB::raw('DATE_FORMAT(blog_category.created_at, "%b,%d-%Y") as created_date'), 'path', 'image')->where('status', 'Yes')->get()->toArray();
+        return view('blog')->with(compact('blogcategory'));
     }
 
 }
