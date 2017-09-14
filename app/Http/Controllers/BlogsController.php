@@ -191,7 +191,8 @@ class BlogsController extends Controller {
     
     //Front work start..
     public function blog(){
-        return view('blog');
+        $blogcategory = BlogCategory::select('id' ,'title',DB::raw('DATE_FORMAT(blog_category.created_at, "%b,%d-%Y") as created_date'), 'path', 'image')->where('status', 'Yes')->get()->toArray();
+        return view('blog')->with(compact('blogcategory'));
     }
 
 }

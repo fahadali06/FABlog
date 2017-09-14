@@ -17,6 +17,8 @@ class CreateBlogCategoryTable extends Migration
             $table->string('title');
             $table->integer('user_id');
             $table->enum('status', ['Yes', 'No'])->default('Yes');
+            $table->string('path', 50);
+            $table->string('image', 50);
             $table->integer('created_by');
             $table->timestamps();
         });
