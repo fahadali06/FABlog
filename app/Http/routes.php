@@ -16,6 +16,7 @@
 //});
 
 Route::get('/', 'HomeController@index');
+Route::get('/blog', 'BlogsController@blog');
 
 Route::get('/dashboard', 'HomeController@dashboard');
 

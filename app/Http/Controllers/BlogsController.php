@@ -188,5 +188,10 @@ class BlogsController extends Controller {
         $blogs->delete();
         echo $blogs ? "Success" : "error";
     }
+    
+    //Front work start..
+    public function blog(){
+        return view('blog');
+    }
 
 }

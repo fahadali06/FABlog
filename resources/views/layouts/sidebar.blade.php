@@ -50,9 +50,36 @@
 
     <!-- Side Widget -->
     <div class="card my-4">
-        <h5 class="card-header">Side Widget</h5>
+        <h5 class="card-header">Recent Posts</h5>
         <div class="card-body">
-            You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+            @if($RecentBlog)
+            @foreach($RecentBlog as $blog)
+            <h5>{!! $blog['title'] !!}</h5>
+            <div class="row">
+                <div class="col-md-12">
+                    <img width='50' style='float:left; margin-right:10px;' src="{{ $blog['path'] ? asset('public/assets/upload/'.$blog['path'].'/'.$blog['image']) : "http://placehold.it/50x50" }}" /><!-- http://placehold.it/50x50 -->
+                    {!! str_limit($blog['description'], $limit = 50, $end = '...') !!}
+                    <a href="{{ url('#') }}"><small>See Post</small></a>
+                </div>
+                
+            </div>
+            @endforeach
+            @endif
+        </div>
+    </div>
+
+    <!-- Side Archive -->
+    <div class="card my-4">
+        <h5 class="card-header">Archive</h5>
+        <div class="card-body">
+            <div class="row">
+                @if(isset($ArchiveBlog))
+                @foreach($ArchiveBlog as $blog)
+                <div class="col-sm-6"><a href="{{ url('blogs/archive/'.$blog['created_date']) }}" class=" btn-link">{{ $blog['created_date'] }}</a></div>
+                @endforeach
+                @endif
+            </div>
+
         </div>
     </div>
 

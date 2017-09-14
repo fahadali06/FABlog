@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
+        <link rel="shortcut icon" href="{{{ asset('public/assets/front/favicon.ico') }}}">
 
         <title>{{ isset($title) ? $title : "" }}</title>
 

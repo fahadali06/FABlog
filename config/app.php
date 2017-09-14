@@ -158,6 +158,9 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         App\Providers\ComposerServiceProvider::class,
         App\Providers\UserServiceProvider::class,
+        App\Providers\RecentPostProvider::class,
+        App\Providers\ArchivePostProvider::class,
+        App\Providers\BlogCategoryProvider::class,
 
     ],
 

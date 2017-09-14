@@ -39,7 +39,7 @@
                             <a class="nav-link" href="#">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Blogs</a>
+                            <a class="nav-link" href="{{ url('blog') }}">Blogs</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Gallery</a>
