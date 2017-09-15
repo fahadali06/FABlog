@@ -16,7 +16,7 @@
 //});
 
 Route::get('/', 'HomeController@index');
-Route::get('/blog', 'BlogCategoryController@blog');
+Route::get('/category', 'BlogCategoryController@category');
 
 Route::get('/dashboard', 'HomeController@dashboard');
 

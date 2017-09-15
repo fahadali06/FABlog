@@ -9,7 +9,7 @@
 
         <!-- Post Content Column -->
         <div class="col-lg-8">
-            <h4 class="mt-4">Blogs</h4>
+            <h4 class="mt-4">Blog Categories</h4>
             <div class="row">
                 @if(isset($blogcategory))
                 @foreach($blogcategory as $category)
