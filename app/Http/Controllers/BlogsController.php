@@ -18,7 +18,7 @@ class BlogsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function __construct() {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['blog', 'blog_ajax', 'blog_detail_ajax']]);
     }
 
     public function index($id) {
@@ -45,7 +45,7 @@ class BlogsController extends Controller {
         $search = Input::get('search');
         $search = $search['value'];
         if ($search && $search != "") {
-            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path',DB::raw('(CASE WHEN (blogs.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
+            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path', DB::raw('(CASE WHEN (blogs.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('users', function($join) {
                         $join->on('users.id', '=', 'blogs.user_id');
                     })
@@ -64,7 +64,7 @@ class BlogsController extends Controller {
             $recordsTotalSearch = count($blogs);
             $recordsFilteredSearch = count($blogs);
         } else {
-            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path',DB::raw('(CASE WHEN (blogs.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
+            $blogs = Blogs::select('blogs.id', 'blogs.title', 'users.name as user_id', DB::raw('DATE_FORMAT(blogs.created_at, "%d-%m-%Y %H:%i:%s") as created_date'), DB::raw('DATE_FORMAT(blogs.updated_at, "%d-%m-%Y %H:%i:%s") as updated_date'), 'blogs.description', 'blogs.links', 'blogs.image', 'blogs.path', DB::raw('(CASE WHEN (blogs.status = "Yes") THEN "Active" ELSE "Inactive" END) as status'))
                     ->join('users', function($join) {
                         $join->on('users.id', '=', 'blogs.user_id');
                     })
@@ -79,7 +79,7 @@ class BlogsController extends Controller {
         $data = [];
         foreach ($blogs as $da) {//public_path {{url("public/assets/upload/")}}' . $da['path'] . '/' . $da['image'] . '
             //$action = '<a href="' . url("admin/blogs/blog/" . $da['id']) . '" class="btn btn-success btn-xs">Blogs <i class="fa fa-arrow-right"></i></a> ';
-            $image = '<img src="'.  ($da['image'] ? url("public/assets/upload/".$da['path']."/".$da['image']) : url("public/assets/upload/thumb.jpg")).'" width="30" height="30" />';
+            $image = '<img src="' . ($da['image'] ? url("public/assets/upload/" . $da['path'] . "/" . $da['image']) : url("public/assets/upload/thumb.jpg")) . '" width="30" height="30" />';
             $action = '<a id="edit-' . $da['id'] . '" data-token=' . csrf_token() . ' onclick="edit(' . $da['id'] . ');" class="btn btn-warning btn-xs">Edit <i class="fa fa-pencil"></i></a> ';
             $action .= '<a id="delete-' . $da['id'] . '" data-token=' . csrf_token() . ' onclick="delete_blog(' . $da['id'] . ');" class="btn btn-danger btn-xs">Delete <i class="fa fa-trash"></i></a>';
             array_push($data, array_merge($da, ['action' => $action, 'image' => $image]));
@@ -111,7 +111,7 @@ class BlogsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        
+
         $blogs = new Blogs();
         $user = Auth::user();
         if ($request->title && $request->title) {
@@ -188,5 +188,28 @@ class BlogsController extends Controller {
         $blogs->delete();
         echo $blogs ? "Success" : "error";
     }
+
+    public function blog($id) {
+        $data = [];
+        $blogcategory = BlogCategory::select('id', 'title')->get()->toArray();
+        foreach ($blogcategory as $category) {
+            $data[$category['id']] = $category['title'];
+        }
+        $blogcategory = $data;
+        $blog = Blogs::where('blog_category', $id)->first();
+        return view('blog')->with(compact('blogcategory', 'blog', 'id'));
+    }
+
+    public function blog_ajax(Request $request) {
+        $blogs = Blogs::select('id', 'title')->where('blog_Category', $request->id)->get()->toArray();
+        echo json_encode($blogs);
+        exit;
+    }
     
+    public function blog_detail_ajax(Request $request) {
+        $blogs = Blogs::select('blogs.*', DB::raw('DATE_FORMAT(blogs.created_at, "%b,%d-%Y") as created_date'))->with('bloguser')->where('id', $request->id)->get()->first();
+        echo json_encode($blogs);
+        exit;
+    }
+
 }

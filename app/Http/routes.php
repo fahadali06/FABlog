@@ -17,6 +17,9 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/category', 'BlogCategoryController@category');
+Route::get('/blog/{id}', 'BlogsController@blog');
+Route::post('/blog_ajax', 'BlogsController@blog_ajax');
+Route::post('/blog_detail_ajax', 'BlogsController@blog_detail_ajax');
 
 Route::get('/dashboard', 'HomeController@dashboard');
 

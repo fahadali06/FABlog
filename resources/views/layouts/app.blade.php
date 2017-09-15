@@ -16,6 +16,7 @@
 
         <!-- Custom styles for this template -->
         <link href="{{ asset('public/assets/front/css/blog-post.css') }}" rel="stylesheet">
+        <script src="{{ asset('public/assets/admin//vendor/jquery/jquery.min.js') }}"></script>
 
     </head>
 
