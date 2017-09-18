@@ -103,15 +103,19 @@
                 if (result) {
                     $('.show-blog').css('display', 'block');
                     $('.blog-title').text(result.title);
+                    $('#mtitle').attr('content', result.title);
                     $('.blog-user').text(result.bloguser.name);
                     $('.blog-date').text('Posted on ' + result.created_date);
                     if (result.path) {
                         var src = '<?php echo asset('public/assets/upload'); ?>/' + result.path + '/' + result.image;
-                    }else{
+                    } else {
                         var src = 'http://placehold.it/900x300';
                     }
                     $('.blog-image').attr('src', src);
+                    $('#mimage').attr('content', src);
                     $('.blog-description').html(result.description);
+                    $('#mdescription').attr('content', result.description.replace(/(<([^>]+)>)/ig,""));
+                    $('#murl').attr('content', '<?php echo url('blog') ?>/' + result.blog_category + '/' + result.id);
                 } else {
 
                     $('.show-blog').css('display', 'none');

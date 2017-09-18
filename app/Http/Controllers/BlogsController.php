@@ -18,7 +18,7 @@ class BlogsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function __construct() {
-        $this->middleware('auth', ['except' => ['blog', 'blog_ajax', 'blog_detail_ajax']]);
+        $this->middleware('auth', ['except' => ['blog', 'blog_ajax', 'blog_detail_ajax', 'blog_share']]);
     }
 
     public function index($id) {
@@ -196,8 +196,9 @@ class BlogsController extends Controller {
             $data[$category['id']] = $category['title'];
         }
         $blogcategory = $data;
+        $fb = TRUE;
         $blog = Blogs::where('blog_category', $id)->first();
-        return view('blog')->with(compact('blogcategory', 'blog', 'id'));
+        return view('blog')->with(compact('blogcategory', 'blog', 'id', 'fb'));
     }
 
     public function blog_ajax(Request $request) {
@@ -205,11 +206,30 @@ class BlogsController extends Controller {
         echo json_encode($blogs);
         exit;
     }
-    
+
     public function blog_detail_ajax(Request $request) {
         $blogs = Blogs::select('blogs.*', DB::raw('DATE_FORMAT(blogs.created_at, "%b,%d-%Y") as created_date'))->with('bloguser')->where('id', $request->id)->get()->first();
         echo json_encode($blogs);
         exit;
+    }
+
+    public function blog_share($category_id, $blog_id) {
+        $blogs = Blogs::select('blogs.title as blog', 'blogs.id as blog_id', 'blogs.path', 'blogs.image', DB::raw('DATE_FORMAT(blogs.created_at, "%b,%d-%Y") as created_date'), 'blog_category.id as category_id', 'blogs.description', 'users.name')
+                ->join('blog_category', 'blog_category.id', '=', 'blogs.blog_category')
+                ->join('users', 'users.id', '=', 'blogs.user_id')
+                ->where('blogs.blog_Category', $category_id)
+                ->where('blogs.id', $blog_id)
+                ->get()
+                ->toArray();
+
+        $rel_blogs = Blogs::select('blogs.title', 'blogs.id', 'blogs.blog_category')
+                ->join('blog_category', 'blog_category.id', '=', 'blogs.blog_category')
+                ->where('blog_category.id', $category_id)
+                ->where('blogs.id', '!=', $blog_id)
+                ->get()
+                ->toArray();
+        //echo "<pre>";print_r($blogs);exit;
+        return view('blog_share')->with(compact('blogs', 'rel_blogs'));
     }
 
 }
